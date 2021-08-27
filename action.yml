@@ -4,7 +4,7 @@ description: "This action wraps up the "
 
 inputs:
   gh_token:
-    description: "The GitHub Token, value of ${{ secrets.GITHUB_TOKEN}}"
+    description: "The GitHub Token, value of `secrets.GITHUB_TOKEN` in the calling workflow"
     required: true
   img_name:
     description: "The image name to build"
