@@ -3,6 +3,9 @@ name: "Docker Build Common Action"
 description: "This action wraps up the "
 
 inputs:
+  gh_token:
+    description: "The GitHub Token, value of ${{ secrets.GITHUB_TOKEN}}"
+    required: true
   img_name:
     description: "The image name to build"
     required: true
@@ -34,7 +37,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN}}
+        password: ${{ inputs.gh_token }}
 
     - name: Docker Buildx and push
       uses: docker/build-push-action@v2
