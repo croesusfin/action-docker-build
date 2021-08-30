@@ -3,6 +3,10 @@ name: "Docker Build Common Action"
 description: "This action wraps up the "
 
 inputs:
+  context:
+    description: "The path to the Dockerfile to build"
+    default: "."
+    required: false
   gh_token:
     description: "The GitHub Token, value of `secrets.GITHUB_TOKEN` in the calling workflow"
     required: true
@@ -42,7 +46,7 @@ runs:
     - name: Docker Buildx and push
       uses: docker/build-push-action@v2
       with:
-        context: ${{ inputs.img_name }}
+        context: ${{ inputs.context }}
         push: ${{  github.event_name != 'pull_request' }}
         tags: ${{ inputs.registry }}${{ inputs.img_name }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache-${{ inputs.img_name }}
