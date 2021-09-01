@@ -34,5 +34,5 @@ Le guideline chez Croesus est d'avoir des repository internal (visible par tous 
 problème avec une action comme celle présentée ici car les GitHub Runners n'ont pas la capacité pour le moment d'accéder
 au code de l'action, voir :
 
-- https://github.com/github/roadmap/issues/74.
+- https://github.com/github/roadmap/issues/74
 - https://github.com/actions/runner/issues/1005
