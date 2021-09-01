@@ -16,7 +16,7 @@ inputs:
   registry:
     description: "The registry name"
     default: "ghcr.io/croesusfin/"
-    required: true
+    required: false
 
 
 runs:
@@ -39,7 +39,7 @@ runs:
       uses: docker/metadata-action@v3
       id: meta
       with:
-        images: croesusfin/${{ inputs.img_name }}
+        images: ${{ inputs.registry }}${{ inputs.img_name }}
         tags: |
           type=ref,event=branch
           type=semver,pattern={{major}}.{{minor}}.{{patch}}
@@ -60,7 +60,7 @@ runs:
       with:
         context: ${{ inputs.context }}
         push: ${{  github.event_name != 'pull_request' }}
-        cache-from: type=registry,ref=croesusfin/${{ inputs.img_name }}:latest
+        cache-from: type=registry,ref=${{ inputs.registry }}${{ inputs.img_name }}:latest
         cache-to: type=inline
         build-args: 'registry=${{ inputs.registry }}'
         labels: ${{ steps.meta.outputs.labels }}
