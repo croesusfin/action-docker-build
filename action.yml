@@ -31,7 +31,7 @@ runs:
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
-        path: /tmp/.buildx-cache
+        path: /tmp/.buildx-cache-${{ inputs.img_name }}
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
@@ -43,15 +43,26 @@ runs:
         username: ${{ github.repository_owner }}
         password: ${{ inputs.gh_token }}
 
+    - name: Docker meta
+      uses: docker/metadata-action@v3
+      id: meta
+      with:
+        images: name/app
+        tags: |
+          type=ref,event=branch
+          type=semver,pattern={{major}}.{{minor}}.{{patch}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+
     - name: Docker Buildx and push
       uses: docker/build-push-action@v2
       with:
         context: ${{ inputs.context }}
         push: ${{  github.event_name != 'pull_request' }}
-        tags: ${{ inputs.registry }}${{ inputs.img_name }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache-${{ inputs.img_name }}
         cache-to: type=local,dest=/tmp/.buildx-cache-${{ inputs.img_name }}-new
         build-args: 'registry=${{ inputs.registry }}'
+        tags: ${{ steps.meta.outputs.tags }}
 
     # This bit is necessary if you don't want your cache to grow forever
     # https://github.com/docker/build-push-action/issues/252
