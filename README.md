@@ -18,10 +18,10 @@ Une action composite peut être apellée comme tout autre action dans le workflo
 
 ```
   - name: Docker Build Action
-    uses: croesusfin/action-docker-build@v0.1
+    uses: croesusfin/action-docker-build@v0.3.5
     with:
+      gh_token: ${{ secrets.GITHUB_TOKEN}}
       img_name: "proxy.co7x"
-      registry: "ghcr.io/croesusfin/"
 ```
 
 ## Comment contribuer?
