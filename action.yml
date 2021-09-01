@@ -25,15 +25,15 @@ runs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-#    - name: Setup Docker Buildx
-#      uses: docker/setup-buildx-action@v1
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
     - name: Docker Login
-      uses: docker/login-action@v1.10.0
+      uses: docker/login-action@v1
       with:
-        registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ inputs.gh_token }}
+        registry: ghcr.io
 
     - name: Docker meta
       uses: docker/metadata-action@v3
@@ -46,31 +46,31 @@ runs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
-    # TODO Check the values of arguments passed here
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache-${{ inputs.img_name }}
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+#    # TODO Check the values of arguments passed here
+#    - name: Cache Docker layers
+#      uses: actions/cache@v2
+#      with:
+#        path: /tmp/.buildx-cache-${{ inputs.img_name }}
+#        key: ${{ runner.os }}-buildx-${{ github.sha }}
+#        restore-keys: |
+#          ${{ runner.os }}-buildx-
 
     - name: Docker Buildx and push
       uses: docker/build-push-action@v2
       with:
         context: ${{ inputs.context }}
         push: ${{  github.event_name != 'pull_request' }}
-        cache-from: type=local,src=/tmp/.buildx-cache-${{ inputs.img_name }}
-        cache-to: type=local,dest=/tmp/.buildx-cache-${{ inputs.img_name }}-new
+        cache-from: type=registry,ref=croesusfin/${{ inputs.img_name }}:latest
+        cache-to: type=inline
         build-args: 'registry=${{ inputs.registry }}'
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
 
-    # This bit is necessary if you don't want your cache to grow forever
-    # https://github.com/docker/build-push-action/issues/252
-    # https://github.com/moby/buildkit/issues/1896
-    - name: Move cache
-      shell: bash
-      run: |
-        rm -rf /tmp/.buildx-cache-${{ inputs.img_name }}
-        mv /tmp/.buildx-cache-${{ inputs.img_name }}-new /tmp/.buildx-cache-${{ inputs.img_name }}
+#    # This bit is necessary if you don't want your cache to grow forever
+#    # https://github.com/docker/build-push-action/issues/252
+#    # https://github.com/moby/buildkit/issues/1896
+#    - name: Move cache
+#      shell: bash
+#      run: |
+#        rm -rf /tmp/.buildx-cache-${{ inputs.img_name }}
+#        mv /tmp/.buildx-cache-${{ inputs.img_name }}-new /tmp/.buildx-cache-${{ inputs.img_name }}
