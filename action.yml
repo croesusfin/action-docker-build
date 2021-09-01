@@ -28,6 +28,7 @@ runs:
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
 
+    # TODO Check the values of arguments passed here
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
@@ -47,7 +48,7 @@ runs:
       uses: docker/metadata-action@v3
       id: meta
       with:
-        images: name/app
+        images: croesusfin/${{ inputs.img_name }}
         tags: |
           type=ref,event=branch
           type=semver,pattern={{major}}.{{minor}}.{{patch}}
@@ -62,6 +63,7 @@ runs:
         cache-from: type=local,src=/tmp/.buildx-cache-${{ inputs.img_name }}
         cache-to: type=local,dest=/tmp/.buildx-cache-${{ inputs.img_name }}-new
         build-args: 'registry=${{ inputs.registry }}'
+        labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
 
     # This bit is necessary if you don't want your cache to grow forever
