@@ -1,6 +1,6 @@
 name: "Docker Build Common Action"
 
-description: "This action wraps up the "
+description: "This action wraps up the steps required to build a Docker image"
 
 inputs:
   context:
